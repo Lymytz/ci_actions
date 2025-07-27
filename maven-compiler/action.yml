@@ -1,0 +1,61 @@
+name: "Maven compile selon version"
+description: "Compile selon le profil Java"
+
+inputs:
+  java_version:
+    required: true
+    description: version de java
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: ${{inputs.java_version}}
+    - name: Java version
+      run: java -version
+      shell: bash
+    - name: setup maven settings
+      run: |
+        mkdir -p ~/.m2
+        cat > ~/.m2/settings.xml <<EOF
+        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/SETTINGS/1.0.0/settings.xsd">
+        <activeProfiles>
+          <activeProfile>github</activeProfile>
+        </activeProfiles>
+        <profiles>
+        <profile>
+        <id>github</id>
+        <repositories>
+        <repository>
+        <id>central</id>
+        <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/Lymytz/lymytz-github-repository</url>
+        <snapshots>
+        <enabled>true</enabled>
+        </snapshots>
+        </repository>
+        </repositories>
+        </profile>
+        </profiles>
+        <servers>
+        <server>
+        <id>github</id>
+        <username>${{ inputs.GITHUB_USER_NAME }}</username>
+        <password>${{ secrets.TOKEN_CI }}</password>
+        </server>
+        </servers>
+        </settings>
+        EOF
+      shell: bash
+    - name: Vérification du fichier settings
+      run: |
+        test -f  ~/.m2/settings.xml && echo "settings.xml créé"
+      shell: bash
