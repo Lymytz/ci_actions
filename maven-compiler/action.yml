@@ -5,6 +5,12 @@ inputs:
   java_version:
     required: true
     description: version de java
+  github_user_name:
+    required: true
+    description: Nom utilisateur GitHub
+  github_token:
+    required: true
+    description: Token GitHub (ex: secrets.TOKEN_CI)
 
 runs:
   using: composite
@@ -48,8 +54,8 @@ runs:
         <servers>
         <server>
         <id>github</id>
-        <username>${{ inputs.GITHUB_USER_NAME }}</username>
-        <password>${{ secrets.TOKEN_CI }}</password>
+        <username>${{ inputs.github_user_name }}</username>
+        <password>${{ inputs.github_token }}</password>
         </server>
         </servers>
         </settings>
