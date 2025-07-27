@@ -10,7 +10,7 @@ inputs:
     description: Nom utilisateur GitHub
   github_token:
     required: true
-    description: Token GitHub (ex: secrets.TOKEN_CI)
+    description: Token GitHub
 
 runs:
   using: composite
